@@ -1,0 +1,279 @@
+# CursorRules — Machidori i18n Blog (ja/en, Next.js + Tailwind)
+
+## 0. Context
+街撮りch 公式ブログ。  
+動画への最短導線、シリーズ回遊、記事導線を実現。  
+対象：日本語／英語（/ja & /en）。英語圏流入を拡大。  
+トーン：静か・簡潔。No talking / Real street sounds / 4K。
+
+---
+
+## 1. Objectives
+- Next.js + **Tailwind CSS** で i18n 対応ホームを構築。  
+- Home 構成：Hero / Featured (3) / Series (3) / Articles (2–4) / Regions Grid / About / Footer。  
+- SEO (hreflang + meta + OGP + 構造化) と AA アクセシビリティを満たす。
+
+---
+
+## 2. Tech & Constraints
+- Next.js (App or Pages Router) ＋ React Hooks only。  
+- **Tailwind CSS**（Emotion 等 禁止）。  
+- npm 使用（yarn 禁止）。  
+- `next/image` で画像最適化。  
+- 依存最小。UI FW 原則不使用（shadcn/ui は必要最低限）。  
+- デプロイ：Vercel (LCP 優先 / ISR 可)。
+
+---
+
+## 3. i18n Rules
+```js
+// next.config.js
+i18n: { locales: ['ja','en'], defaultLocale: 'ja' }
+```
+ルート：/ja と /en （トップは /ja ）。
+
+言語スイッチ：asPath 維持で locale のみ切替。
+
+<Head> に hreflang (ja/en)。
+
+文言は locales/ja.json, locales/en.json に管理（直書き禁止）。
+
+## 4. Home IA（上から順）
+
+### Header
+- ロゴ  
+- ナビゲーション：`Walks / Articles / About / Contact`  
+- 言語スイッチャー  
+- CTA：「Watch on YouTube」
+
+---
+
+### Hero（1400×788 推奨）
+**EN Title:** Quiet Walks Through Japan’s Everyday Streets  
+**JA Title:** 日本のささやかな日常を静かに歩く  
+
+**Sub:**  
+- EN：No talking, no music — just real street sounds in 4K.  
+- JA：解説や BGM はなし。街の音だけを 4K で。
+
+**CTAs**
+- Latest Walks  
+- Read on Medium  
+- Subscribe on YouTube
+
+---
+
+### Featured Walks（3件）
+- 海外受けしやすい代表作を固定表示  
+- カード：サムネイル、地域名、Day / Night、再生ボタン付き
+
+---
+
+### Series（3カラム）
+- **例**：Hokkaido Night Walks / Tohoku Night Walks / Local Tokyo  
+- 各シリーズの代表的な動画をまとめて表示  
+
+---
+
+### Articles Teaser（2〜4件）
+- Medium の記事概要とサムネイルをカード表示  
+- 外部リンクで開く  
+
+---
+
+### Regions Grid（地域タイル）
+- 北海道 / 東北 / 関東 / 中部 / 近畿 / 中国 / 四国 / 九州  
+- クリックで地域別フィルタ一覧へ  
+
+---
+
+### About Brief
+- 2〜3行でチャンネル紹介  
+- 例：  
+  *“I document everyday Japan through peaceful walking videos.  
+  No narration, no music — just real sounds.”*  
+- SNS リンク：YouTube / X / Instagram / Threads  
+
+---
+
+### Newsletter（任意）
+- 月1回などで更新情報を通知  
+- “Get new walks in your inbox (monthly).”
+
+---
+
+### Footer
+- Sitemap / Policy / 言語切替  
+- コピーライト  
+- 小さめフォント（`text-sm text-neutral-500`）
+
+---
+
+## 5. Data Models（mock OK）
+
+```ts
+type Walk = {
+  id: string;
+  title_ja: string;
+  title_en: string;
+  thumbnail: string;
+  youtubeId: string;
+  region:
+    | 'Hokkaido'
+    | 'Tohoku'
+    | 'Kanto'
+    | 'Chubu'
+    | 'Kinki'
+    | 'Chugoku'
+    | 'Shikoku'
+    | 'Kyushu';
+  time: 'Day' | 'Night';
+  featured?: boolean;
+};
+
+type Article = {
+  id: string;
+  title_ja: string;
+  title_en: string;
+  excerpt_ja: string;
+  excerpt_en: string;
+  url: string;
+  thumbnail?: string;
+};
+
+type Series = {
+  id: string;
+  title_ja: string;
+  title_en: string;
+  walkIds: string[];
+};
+```
+
+## 6. Components（Tailwind）
+
+- **Header**：固定／`backdrop-blur`／`border-b`  
+- **LangSwitch**：`asPath` 維持で locale 切替  
+- **Hero**：`container mx-auto px-4 py-12 md:py-20`／`rounded-2xl shadow`  
+- **CardWalk**：`rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition`  
+- **RowFeatured**：`grid grid-cols-1 md:grid-cols-3 gap-6`  
+- **RowSeries**：同上  
+- **RowArticles**：`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6`  
+- **RegionsGrid**：`aspect-video rounded-2xl ring-1 ring-black/10`  
+- **AboutBrief**：`prose prose-neutral dark:prose-invert`  
+- **Footer**：`border-t text-sm text-neutral-500`
+
+**共通スタイル**  
+- 角丸：`rounded-2xl`  
+- 影：`shadow-sm` 基本  
+- 余白：`py-12 md:py-16`  
+- 横幅：`container mx-auto px-4`  
+- 見出し：`text-2xl md:text-3xl font-semibold tracking-tight`  
+- テキスト：`leading-relaxed text-neutral-700 dark:text-neutral-300`  
+- ホバー：`hover:-translate-y-0.5 hover:shadow-md transition`  
+- 画像：`next/image`＋`className="w-full h-auto object-cover"`
+
+---
+
+## 7. SEO / Meta / OGP
+
+- 言語別 `title` と `description` を `<Head>` で出し分け  
+- `<link rel="alternate" hrefLang="ja|en">` を必ず出力  
+- OGP：1200×630（中央寄せ、余白あり）  
+- 構造化データ：`WebSite` + `BreadcrumbList`  
+  - 記事ページでは `BlogPosting`  
+- コピーは直訳せず、各言語で自然に
+
+---
+
+## 8. Accessibility / Performance
+
+- 画像に `alt` を必ず設定  
+- コントラスト AA 以上  
+- LCP < 2.5s を目安  
+- `next/image` に `sizes` 指定  
+- キーボード操作で全UI操作可能  
+- `focus-visible:outline` でフォーカス可視化
+
+---
+
+## 9. Tailwind Setup
+
+```bash
+npm i -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+**tailwind.config.ts**
+```ts
+export default {
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}'
+  ],
+  theme: {
+    extend: {
+      borderRadius: { '2xl': '1rem' }
+    }
+  },
+  plugins: []
+};
+```
+
+**globals.css**
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+フォント：システムUI優先（必要なら `@next/font`）
+
+---
+
+## 10. Copy（locales/*.json）
+
+**EN**
+```json
+{
+  "hero.title": "Quiet Walks Through Japan’s Everyday Streets",
+  "hero.sub": "No talking, no music—just real street sounds in 4K.",
+  "cta.latest": "Latest Walks",
+  "cta.medium": "Read on Medium",
+  "cta.youtube": "Subscribe on YouTube",
+  "about.brief": "I document everyday Japan through peaceful walking videos. No narration, no music—just real sounds."
+}
+```
+
+**JA**
+```json
+{
+  "hero.title": "日本のささやかな日常を静かに歩く",
+  "hero.sub": "解説やBGMはなし。街の音だけを4Kで。",
+  "cta.latest": "最新の街歩き",
+  "cta.medium": "Mediumで読む",
+  "cta.youtube": "YouTubeをフォロー",
+  "about.brief": "解説も音楽もなく、日本の日常を静かに記録しています。街の音だけをお楽しみください。"
+}
+```
+
+---
+
+## 11. DoD（完了条件）
+
+- `/ja` ⇄ `/en` の切替で同一パスを維持  
+- Hero 画像＋CTA 3つが動作  
+- Featured 3件・Series 3列・Articles 2〜4件・Regions Grid 遷移OK  
+- `<Head>` に `hreflang` と言語別 meta  
+- Lighthouse (Mobile)：  
+  - Performance / SEO / Best Practices / Accessibility すべて 90 以上
+
+---
+
+## 12. Out of Scope
+
+- CMS 統合  
+- 検索機能  
+- 記事詳細ページのフル実装  
+- ダークモード  
+- 複雑なアニメーション
