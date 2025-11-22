@@ -1,0 +1,123 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.description {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 300;
+}
+
+.main {
+  margin-bottom: 3rem;
+}
+
+.posts {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.postList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.postCard {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.postCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.postLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.postTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.postExcerpt {
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.postDate {
+  font-size: 0.9rem;
+  color: #999;
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .title {
+    background: linear-gradient(135deg, #a8b5ff 0%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .description {
+    color: #ccc;
+  }
+
+  .sectionTitle {
+    color: #e0e0e0;
+  }
+
+  .postCard {
+    background: #2a2a2a;
+    border-color: #404040;
+  }
+
+  .postCard:hover {
+    border-color: #a8b5ff;
+  }
+
+  .postTitle {
+    color: #e0e0e0;
+  }
+
+  .postExcerpt {
+    color: #ccc;
+  }
+
+  .postDate {
+    color: #999;
+  }
+}
+
