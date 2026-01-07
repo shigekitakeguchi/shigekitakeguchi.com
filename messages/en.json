@@ -1,0 +1,28 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "blog": "Blog",
+    "tags": "Tags",
+    "readMore": "Read more",
+    "publishedOn": "Published on",
+    "author": "Author",
+    "nextPost": "Next Post",
+    "prevPost": "Previous Post",
+    "relatedPosts": "Related Posts",
+    "allPosts": "All Posts",
+    "noPosts": "No posts found",
+    "switchLanguage": "Switch Language"
+  },
+  "home": {
+    "title": "Welcome to My Blog",
+    "description": "A blog built with Next.js and Tailwind CSS",
+    "latestPosts": "Latest Posts"
+  },
+  "about": {
+    "title": "About",
+    "description": "About this blog"
+  }
+}
+
+

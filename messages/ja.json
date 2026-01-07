@@ -1,0 +1,28 @@
+{
+  "common": {
+    "home": "ホーム",
+    "about": "について",
+    "blog": "ブログ",
+    "tags": "タグ",
+    "readMore": "続きを読む",
+    "publishedOn": "公開日",
+    "author": "著者",
+    "nextPost": "次の投稿",
+    "prevPost": "前の投稿",
+    "relatedPosts": "関連投稿",
+    "allPosts": "すべての投稿",
+    "noPosts": "投稿が見つかりません",
+    "switchLanguage": "言語を切り替え"
+  },
+  "home": {
+    "title": "ブログへようこそ",
+    "description": "Next.jsとTailwind CSSで構築されたブログ",
+    "latestPosts": "最新の投稿"
+  },
+  "about": {
+    "title": "について",
+    "description": "このブログについて"
+  }
+}
+
+
