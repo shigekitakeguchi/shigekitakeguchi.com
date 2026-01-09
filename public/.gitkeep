@@ -1,0 +1,8 @@
+# このディレクトリに静的ファイルを配置します
+# 画像、PDF、その他の静的ファイルはここに配置してください
+# 
+# 例:
+# - public/images/logo.png
+# - public/images/posts/my-post-image.jpg
+# - public/favicon.ico
+# - public/robots.txt (既に動的生成されている場合は不要)

@@ -18,6 +18,16 @@ module.exports = {
                 color: theme('colors.blue.800'),
               },
             },
+            img: {
+              maxWidth: '100%',
+              height: 'auto',
+              borderRadius: theme('borderRadius.lg'),
+              marginTop: theme('spacing.6'),
+              marginBottom: theme('spacing.6'),
+              display: 'block',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            },
           },
         },
         dark: {
@@ -28,6 +38,16 @@ module.exports = {
               '&:hover': {
                 color: theme('colors.blue.600'),
               },
+            },
+            img: {
+              maxWidth: '100%',
+              height: 'auto',
+              borderRadius: theme('borderRadius.lg'),
+              marginTop: theme('spacing.6'),
+              marginBottom: theme('spacing.6'),
+              display: 'block',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             },
           },
         },

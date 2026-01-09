@@ -1,20 +1,11 @@
-import { GetStaticProps } from 'next'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { defaultLocale, locales } from '@/i18n'
+import { GetServerSideProps } from 'next'
+import { defaultLocale } from '@/i18n'
 
 export default function Home() {
-  const router = useRouter()
-
-  useEffect(() => {
-    // デフォルトロケールにリダイレクト
-    router.replace(`/${defaultLocale}`)
-  }, [router])
-
   return null
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {
       destination: `/${defaultLocale}`,
@@ -22,4 +13,5 @@ export const getStaticProps: GetStaticProps = async () => {
     },
   }
 }
+
 

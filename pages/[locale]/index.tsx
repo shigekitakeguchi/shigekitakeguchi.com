@@ -1,6 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import fs from 'fs'
+import path from 'path'
 import { getPosts } from '@/lib/posts'
 import PostCard from '@/components/PostCard'
 import { locales } from '@/i18n'
@@ -11,11 +13,15 @@ interface HomePageProps {
 }
 
 export default function HomePage({ posts, locale }: HomePageProps) {
-  const t = useTranslations('common')
   const latestPosts = posts.slice(0, 5)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Head>
+        <title>{locale === 'ja' ? 'ブログへようこそ' : 'Welcome to My Blog'}</title>
+        <meta name="description" content={locale === 'ja' ? 'Next.jsとTailwind CSSで構築されたブログ' : 'A blog built with Next.js and Tailwind CSS'} />
+      </Head>
+      <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-3xl">
         <h1 className="mb-4 text-4xl font-bold">
           {locale === 'ja' ? 'ブログへようこそ' : 'Welcome to My Blog'}
@@ -55,6 +61,7 @@ export default function HomePage({ posts, locale }: HomePageProps) {
         )}
       </div>
     </div>
+    </>
   )
 }
 
@@ -67,15 +74,36 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const locale = params?.locale as string
-  const posts = await getPosts(locale)
-  const messages = (await import(`@/messages/${locale}.json`)).default
+  
+  if (!locale) {
+    return {
+      notFound: true,
+    }
+  }
+  
+  try {
+    const posts = await getPosts(locale)
+    const messagesPath = path.join(process.cwd(), 'messages', `${locale}.json`)
+    const messagesContent = fs.readFileSync(messagesPath, 'utf8')
+    const messages = JSON.parse(messagesContent)
 
-  return {
-    props: {
-      posts,
-      locale,
-      messages,
-    },
+    return {
+      props: {
+        posts,
+        locale,
+        messages,
+      },
+    }
+  } catch (error) {
+    console.error('Error loading posts or messages:', error)
+    return {
+      props: {
+        posts: [],
+        locale,
+        messages: {},
+      },
+    }
   }
 }
+
 

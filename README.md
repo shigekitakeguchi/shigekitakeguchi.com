@@ -109,11 +109,70 @@ Vercelは自動的にNext.jsプロジェクトを検出し、適切な設定で�
 ├── messages/              # 翻訳ファイル
 │   ├── en.json
 │   └── ja.json
+├── public/                # 静的ファイル
+│   └── images/            # 画像ファイル
 ├── styles/                # スタイルファイル
 │   └── globals.css        # グローバルスタイル
 ├── i18n.ts                # 国際化設定
 ├── middleware.ts          # Next.jsミドルウェア
 └── package.json
+```
+
+## 静的ファイルの配置
+
+画像やその他の静的ファイルは `public/` ディレクトリに配置します。
+
+### ディレクトリ構造
+
+```
+public/
+├── images/           # 画像ファイル
+│   ├── logo.png
+│   ├── hero.jpg
+│   └── posts/        # 投稿用の画像
+├── favicon.ico       # ファビコン
+└── documents/        # PDFなどのドキュメント
+```
+
+### 画像の使用方法
+
+#### 方法1: Next.jsのImageコンポーネント（推奨）
+
+```tsx
+import Image from '@/components/Image'
+
+<Image 
+  src="/images/logo.png" 
+  alt="Logo" 
+  width={200} 
+  height={100} 
+/>
+```
+
+#### 方法2: 通常のimgタグ
+
+```tsx
+<img src="/images/hero.jpg" alt="Hero image" />
+```
+
+#### 方法3: CSSのbackground-image
+
+```css
+.hero {
+  background-image: url('/images/hero.jpg');
+}
+```
+
+### 外部画像の使用
+
+外部URLの画像を使用する場合は、`next.config.js`にドメインを追加してください：
+
+```javascript
+module.exports = {
+  images: {
+    domains: ['example.com', 'cdn.example.com'],
+  },
+}
 ```
 
 ## カスタマイズ

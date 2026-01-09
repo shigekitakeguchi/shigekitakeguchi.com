@@ -1,10 +1,8 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useTranslations } from 'next-intl'
 import { useState, useEffect } from 'react'
 
 export default function Header() {
-  const t = useTranslations('common')
   const router = useRouter()
   const locale = (router.query.locale as string) || 'en'
   const [isDark, setIsDark] = useState(false)
@@ -42,13 +40,13 @@ export default function Header() {
               href={`/${locale}`}
               className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
             >
-              {t('home')}
+              {locale === 'ja' ? 'ホーム' : 'Home'}
             </Link>
             <Link
               href={`/${locale}/blog`}
               className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
             >
-              {t('blog')}
+              {locale === 'ja' ? 'ブログ' : 'Blog'}
             </Link>
             <button
               onClick={switchLocale}

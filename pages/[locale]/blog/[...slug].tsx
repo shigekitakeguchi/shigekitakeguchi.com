@@ -1,6 +1,9 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import fs from 'fs'
+import path from 'path'
 import { getPost, getPosts } from '@/lib/posts'
 import { format } from 'date-fns'
 import { enUS, ja } from 'date-fns/locale'
@@ -28,7 +31,18 @@ export default function PostPage({ post, nextPost, prevPost, locale }: PostPageP
   const formattedDate = format(new Date(post.date), 'PPP', { locale: dateLocale })
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Head>
+        <title>{post.title} | {locale === 'ja' ? 'ブログ' : 'Blog'}</title>
+        <meta name="description" content={post.excerpt || post.title} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt || post.title} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt || post.title} />
+      </Head>
+      <div className="container mx-auto px-4 py-8">
       <article className="mx-auto max-w-3xl">
         <header className="mb-8">
           <Link
@@ -82,6 +96,7 @@ export default function PostPage({ post, nextPost, prevPost, locale }: PostPageP
         </nav>
       </article>
     </div>
+    </>
   )
 }
 
@@ -90,10 +105,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   for (const locale of locales) {
     const posts = await getPosts(locale)
     for (const post of posts) {
+      // slugがスラッシュを含む場合は配列に分割
+      const slugArray = post.slug.split('/')
       allParams.push({
         params: {
           locale,
-          slug: post.slug,
+          slug: slugArray,
         },
       })
     }
@@ -107,7 +124,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const locale = params?.locale as string
-  const slug = params?.slug as string
+  // slugは配列なので、結合して文字列に変換
+  const slugArray = params?.slug as string[]
+  const slug = Array.isArray(slugArray) ? slugArray.join('/') : slugArray
 
   const post = await getPost(slug, locale)
 
@@ -123,16 +142,36 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prevPost =
     currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
 
-  const messages = (await import(`@/messages/${locale}.json`)).default
+  if (!locale) {
+    return {
+      notFound: true,
+    }
+  }
 
-  return {
-    props: {
-      post,
-      nextPost,
-      prevPost,
-      locale,
-      messages,
-    },
+  try {
+    const messagesPath = path.join(process.cwd(), 'messages', `${locale}.json`)
+    const messagesContent = fs.readFileSync(messagesPath, 'utf8')
+    const messages = JSON.parse(messagesContent)
+
+    return {
+      props: {
+        post,
+        nextPost,
+        prevPost,
+        locale,
+        messages,
+      },
+    }
+  } catch (error) {
+    console.error('Error loading messages:', error)
+    return {
+      props: {
+        post,
+        nextPost,
+        prevPost,
+        locale,
+        messages: {},
+      },
+    }
   }
 }
-

@@ -1,5 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
+import fs from 'fs'
+import path from 'path'
 import { getPosts } from '@/lib/posts'
 import PostCard from '@/components/PostCard'
 import { locales } from '@/i18n'
@@ -11,7 +14,12 @@ interface BlogPageProps {
 
 export default function BlogPage({ posts, locale }: BlogPageProps) {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Head>
+        <title>{locale === 'ja' ? 'すべての投稿' : 'All Posts'} | {locale === 'ja' ? 'ブログ' : 'Blog'}</title>
+        <meta name="description" content={locale === 'ja' ? 'すべてのブログ投稿一覧' : 'All blog posts'} />
+      </Head>
+      <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-3xl">
         <h1 className="mb-8 text-4xl font-bold">
           {locale === 'ja' ? 'すべての投稿' : 'All Posts'}
@@ -29,6 +37,7 @@ export default function BlogPage({ posts, locale }: BlogPageProps) {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
@@ -41,15 +50,36 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const locale = params?.locale as string
-  const posts = await getPosts(locale)
-  const messages = (await import(`@/messages/${locale}.json`)).default
+  
+  if (!locale) {
+    return {
+      notFound: true,
+    }
+  }
+  
+  try {
+    const posts = await getPosts(locale)
+    const messagesPath = path.join(process.cwd(), 'messages', `${locale}.json`)
+    const messagesContent = fs.readFileSync(messagesPath, 'utf8')
+    const messages = JSON.parse(messagesContent)
 
-  return {
-    props: {
-      posts,
-      locale,
-      messages,
-    },
+    return {
+      props: {
+        posts,
+        locale,
+        messages,
+      },
+    }
+  } catch (error) {
+    console.error('Error loading posts or messages:', error)
+    return {
+      props: {
+        posts: [],
+        locale,
+        messages: {},
+      },
+    }
   }
 }
+
 
