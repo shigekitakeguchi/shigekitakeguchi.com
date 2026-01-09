@@ -14,12 +14,84 @@ interface HomePageProps {
 
 export default function HomePage({ posts, locale }: HomePageProps) {
   const latestPosts = posts.slice(0, 5)
+  
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://shigekitakeguchi.com'
+  const canonicalUrl = `${baseUrl}/${locale}`
+  const siteTitle = locale === 'ja' ? 'Shigeki Takeguchi - ブログ' : 'Shigeki Takeguchi - Blog'
+  const siteDescription = locale === 'ja' 
+    ? '街撮りchの中のひとのブログ。フロントエンドエンジニアとして働く55歳のジジイが、首都圏を中心に散歩動画を撮影してYouTubeで配信しています。'
+    : 'Blog by Shigeki Takeguchi. A 55-year-old front-end engineer who shoots walking videos mainly in the Tokyo metropolitan area and distributes them on YouTube.'
+  
+  // 構造化データ（WebSite）
+  const websiteStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteTitle,
+    description: siteDescription,
+    url: baseUrl,
+    publisher: {
+      '@type': 'Person',
+      name: 'Shigeki Takeguchi',
+    },
+  }
+  
+  // 構造化データ（Blog）
+  const blogStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: siteTitle,
+    description: siteDescription,
+    url: `${baseUrl}/${locale}`,
+    author: {
+      '@type': 'Person',
+      name: 'Shigeki Takeguchi',
+    },
+  }
 
   return (
     <>
       <Head>
-        <title>{locale === 'ja' ? 'ブログへようこそ' : 'Welcome to My Blog'}</title>
-        <meta name="description" content={locale === 'ja' ? 'Next.jsとTailwind CSSで構築されたブログ' : 'A blog built with Next.js and Tailwind CSS'} />
+        <title>{siteTitle}</title>
+        <meta name="description" content={siteDescription} />
+        <meta name="keywords" content={locale === 'ja' ? 'ブログ,街撮り,散歩,YouTube,フロントエンドエンジニア' : 'blog,walking,YouTube,front-end engineer'} />
+        <meta name="author" content="Shigeki Takeguchi" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={siteTitle} />
+        <meta property="og:description" content={siteDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Shigeki Takeguchi" />
+        <meta property="og:locale" content={locale === 'ja' ? 'ja_JP' : 'en_US'} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={siteTitle} />
+        <meta name="twitter:description" content={siteDescription} />
+        <meta name="twitter:creator" content="@shigektakeguchi" />
+        
+        {/* hreflang */}
+        {locales.map((loc) => (
+          <link
+            key={loc}
+            rel="alternate"
+            hrefLang={loc}
+            href={`${baseUrl}/${loc}`}
+          />
+        ))}
+        
+        {/* 構造化データ */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogStructuredData) }}
+        />
       </Head>
       <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-3xl">

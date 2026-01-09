@@ -86,6 +86,11 @@ export async function getPosts(locale: string): Promise<PostData[]> {
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const { data, content } = matter(fileContents)
 
+      // published: falseの場合は除外（publishedフィールドがない場合は表示）
+      if (data.published === false) {
+        return null
+      }
+
       const processedContent = await remark()
         .use(remarkRehype, { allowDangerousHtml: true })
         .use(rehypeRaw)
@@ -121,7 +126,10 @@ export async function getPosts(locale: string): Promise<PostData[]> {
     })
   )
 
-  return allPostsData.sort((a, b) => {
+  // nullを除外してフィルタリング
+  const filteredPosts = allPostsData.filter((post): post is PostData => post !== null)
+
+  return filteredPosts.sort((a, b) => {
     if (a.date < b.date) {
       return 1
     } else {
@@ -144,6 +152,11 @@ export async function getPost(
 
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
+
+  // published: falseの場合はnullを返す（publishedフィールドがない場合は表示）
+  if (data.published === false) {
+    return null
+  }
 
   const processedContent = await remark()
     .use(remarkRehype, { allowDangerousHtml: true })
