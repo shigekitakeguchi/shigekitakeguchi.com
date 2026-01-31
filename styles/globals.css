@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PCサイズ（768px以上）でmainタグの子要素のcontainerクラスの幅を500pxに固定 */
+@media (min-width: 768px) {
+  main > .container {
+    max-width: 500px;
+  }
+}
+
+/* Markdown内のiframeのスタイル */
+.prose iframe {
+  width: 500px;
+  height: 281px; /* 16:9 aspect ratio for 500px width */
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+/* モバイルサイズではレスポンシブに */
+@media (max-width: 767px) {
+  .prose iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+}
